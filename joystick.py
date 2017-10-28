@@ -36,11 +36,6 @@ class Joysticks:
             buttons = joystick.get_numbuttons()
             print("\t\tNumber of buttons: {}".format(buttons))
 
-            # Hat switch. All or nothing for direction, not like joysticks.
-            # Value comes back in an array.
-            hats = joystick.get_numhats()
-            print("\t\tNumber of hats: {}".format(hats))
-
     # Do stuff when buttons are pressed
     def buttonAPress(self, controllerId):
         print("Controller {} pressed A".format(controllerId))
@@ -53,6 +48,12 @@ class Joysticks:
 
     def buttonYPress(self, controllerId):
         print("Controller {} pressed Y".format(controllerId))
+
+    def buttonStartPress(self, controllerId):
+        print("Controller {} pressed START".format(controllerId))
+
+    def buttonBackPress(self, controllerId):
+        print("Controller {} pressed BACK".format(controllerId))
 
     def buttonHandler(self, event):
         controllerId = self.controller.get_id()
@@ -67,6 +68,10 @@ class Joysticks:
                     self.buttonXPress(controllerId)
                 elif event.button == xbox360_controller.Y:
                     self.buttonYPress(controllerId)
+                elif event.button == xbox360_controller.START:
+                    self.buttonStartPress(controllerId)
+                elif event.button == xbox360_controller.BACK:
+                    self.buttonBackPress(controllerId)
 
     def padHandler(self, callback):
         pad_up, pad_right, pad_down, pad_left = self.controller.get_pad()

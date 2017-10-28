@@ -5,6 +5,7 @@ from pygame.locals import *
 from tank import Tank
 from joystick import Joysticks
 from tankMover import TankMover
+from map import Map
 
 # colours
 BLACK    = (   0,   0,   0)
@@ -31,6 +32,7 @@ screen = pygame.display.set_mode((screenWidth, screenHeight))
 pygame.display.set_caption(screenTitle)
 joysticks = Joysticks()
 
+map = Map(screenWidth, screenHeight)
 allSpritesList = pygame.sprite.Group()
 
 def createTank():
@@ -43,6 +45,10 @@ tank = createTank()
 tankMover = TankMover(tank)
 allSpritesList.add(tank)
 
+obstacles = map.createObstacles()
+allSpritesList.add(obstacles)
+
+print(allSpritesList.sprites())
 
 def eventHandler():
     for event in pygame.event.get():
