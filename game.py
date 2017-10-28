@@ -6,6 +6,7 @@ from pygame.locals import *
 # colours
 BLACK    = (   0,   0,   0)
 WHITE    = ( 255, 255, 255)
+GREEN    = ( 48, 142, 38)
 
 # Start game
 pygame.init()
@@ -49,7 +50,7 @@ screenTitle = "Tank Game"
 # Show screen
 screen = pygame.display.set_mode((screenWidth, screenHeight))
 pygame.display.set_caption(screenTitle)
-screen.fill(WHITE)
+screen.fill(GREEN)
 
 def eventHandler():
     for event in pygame.event.get():
