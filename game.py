@@ -91,22 +91,24 @@ def buttonYPress(controllerId):
 def buttonYPress(controllerId):
     print("Controller {} pressed Y".format(controllerId))
 
+def joystickEventHandler(controllerId, event):
+    # Handle events for first controller
+    if event.type == pygame.JOYBUTTONDOWN:
+        if event.joy == controllerId:
+            if event.button == xbox360_controller.A:
+                buttonAPress(controllerId)
+            elif event.button == xbox360_controller.B:
+                buttonBPress(controllerId)
+            elif event.button == xbox360_controller.X:
+                buttonXPress(controllerId)
+            elif event.button == xbox360_controller.Y:
+                buttonYPress(controllerId)
+
 def eventHandler():
     for event in pygame.event.get():
-        # Handle events for first controller
-        controllerId = 'none'
-        if (numberOfJoysticks > 0):
+        if numberOfJoysticks > 0:
             controllerId = controller.get_id()
-        if event.type == pygame.JOYBUTTONDOWN:
-            if event.joy == controllerId:
-                if event.button == xbox360_controller.A:
-                    buttonAPress(controllerId)
-                elif event.button == xbox360_controller.B:
-                    buttonBPress(controllerId)
-                elif event.button == xbox360_controller.X:
-                    buttonXPress(controllerId)
-                elif event.button == xbox360_controller.Y:
-                    buttonYPress(controllerId)
+            joystickEventHandler(controllerId, event)
 
         # Handle quit of game or any other events
         if event.type == QUIT:
