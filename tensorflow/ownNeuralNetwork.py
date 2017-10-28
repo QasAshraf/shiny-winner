@@ -1,5 +1,7 @@
 from numpy import exp, array, random, dot
 
+NEURON_COUNT = 8
+INPUT_COUNT = 3
 
 class NeuronLayer():
     def __init__(self, number_of_neurons, number_of_inputs_per_neuron):
@@ -52,41 +54,52 @@ class NeuralNetwork():
 
     # The neural network prints its weights
     def print_weights(self):
-        print("    Layer 1 (4 neurons, each with 3 inputs): ")
+        print("    Layer 1 (" + str(NEURON_COUNT) + " neurons, each with " + str(INPUT_COUNT) + " inputs): ")
         print(self.layer1.synaptic_weights)
-        print("    Layer 2 (1 neuron, with 4 inputs):")
+        print("    Layer 2 (1 neuron, with " + str(NEURON_COUNT) + " inputs):")
         print(self.layer2.synaptic_weights)
 
 if __name__ == "__main__":
+
+    NEURON_COUNT = 7
+    INPUT_COUNT = 6
 
     #Seed the random number generator
     random.seed(1)
 
     # Create layer 1 (4 neurons, each with 3 inputs)
-    layer1 = NeuronLayer(4, 3)
+    layer1 = NeuronLayer(NEURON_COUNT, INPUT_COUNT)
 
     # Create layer 2 (a single neuron with 4 inputs)
-    layer2 = NeuronLayer(1, 4)
+    layer2 = NeuronLayer(1, NEURON_COUNT)
 
     # Combine the layers to create a neural network
     neural_network = NeuralNetwork(layer1, layer2)
 
-    print ("Stage 1) Random starting synaptic weights: ")
+    print("Stage 1) Random starting synaptic weights: ")
     neural_network.print_weights()
 
-    # The training set. We have 7 examples, each consisting of 3 input values
-    # and 1 output value.
-    training_set_inputs = array([[0, 0, 1], [0, 1, 1], [1, 0, 1], [0, 1, 0], [1, 0, 0], [1, 1, 1], [0, 0, 0]])
-    training_set_outputs = array([[0, 1, 1, 1, 1, 0, 0]]).T
+    # opponent speed, opponent health, opponent relative angle, opponent distance, own health, clear shot
+    training_set_inputs = array([
+        [0, 10, 0, 60, 100, 1],
+        [100, 10, 0, 300, 100, 1],
+        [50, 10, 0, 60, 100, 1],
+        [0, 10, 0, 60, 100, 0],
+        [0, 10, 0, 10, 100, 0],
+        [15, 100, 0, 70, 10, 1],
+        [100, 10, 0, 60, 10, 0]
+    ])
+
+    training_set_outputs = array([[1, 0, 1, 0, 0, 0, 0]]).T
 
     # Train the neural network using the training set.
     # Do it 60,000 times and make small adjustments each time.
     neural_network.train(training_set_inputs, training_set_outputs, 60000)
 
-    print ("Stage 2) New synaptic weights after training: ")
+    print("Stage 2) New synaptic weights after training: ")
     neural_network.print_weights()
 
     # Test the neural network with a new situation.
-    print ("Stage 3) Considering a new situation [1, 1, 0] -> ?: ")
-    hidden_state, output = neural_network.think(array([1, 1, 0]))
+    print("Stage 3) Considering a new situation  -> ?: ")
+    hidden_state, output = neural_network.think(array([700, 10, 0, 70, 8, 0]))
     print (output)
