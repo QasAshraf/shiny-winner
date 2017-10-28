@@ -10,6 +10,7 @@ class Tank(pygame.sprite.Sprite):
     def __init__(self, color, boardWidth, boardHeight):
         self.width = 16
         self.height = 16
+        self.movementMultiplier = 3
         self.boardWidth = boardWidth
         self.boardHeight = boardHeight
         ss = spritesheet.spritesheet('tanks.png')
@@ -33,6 +34,21 @@ class Tank(pygame.sprite.Sprite):
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
+
+    def padHandler(self, pad_up, pad_right, pad_down, pad_left):
+        self.move(pad_up * self.movementMultiplier, pad_down * self.movementMultiplier, pad_left * self.movementMultiplier,
+                  pad_right * self.movementMultiplier)
+
+    def joystickHandler(self, x, y):
+        if x > 0:  # Move right
+            self.moveRight(abs(x) * self.movementMultiplier)
+        elif x < 0:  # Move left
+            self.moveLeft(abs(x) * self.movementMultiplier)
+
+        if y > 0:  # Move down
+            self.moveDown(abs(y) * self.movementMultiplier)
+        elif y < 0:  # Move uop
+            self.moveUp(abs(y) * self.movementMultiplier)
 
     def move(self, pixelsUp, pixelsDown, pixelsLeft, pixelsRight):
         self.moveUp(pixelsUp)

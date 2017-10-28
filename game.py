@@ -4,7 +4,6 @@ import pygame
 from pygame.locals import *
 from tank import Tank
 from joystick import Joysticks
-from tankMover import TankMover
 from map import Map
 
 # colours
@@ -42,7 +41,6 @@ def createTank():
     return playerTank
 
 tank = createTank()
-tankMover = TankMover(tank)
 allSpritesList.add(tank)
 
 obstacles = map.createObstacles()
@@ -67,17 +65,17 @@ def eventHandler():
 def keyHandler():
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
-        tankMover.padHandler(0, 0, 0, 1)
+        tank.padHandler(0, 0, 0, 1)
     if keys[pygame.K_RIGHT]:
-        tankMover.padHandler(0, 1, 0, 0)
+        tank.padHandler(0, 1, 0, 0)
     if keys[pygame.K_UP]:
-        tankMover.padHandler(1, 0, 0, 0)
+        tank.padHandler(1, 0, 0, 0)
     if keys[pygame.K_DOWN]:
-        tankMover.padHandler(0, 0, 1, 0)
+        tank.padHandler(0, 0, 1, 0)
 
 def joyHandler():
-    joysticks.padHandler(tankMover.padHandler)
-    joysticks.leftStickHandler(tankMover.joystickHandler)
+    joysticks.padHandler(tank.padHandler)
+    joysticks.leftStickHandler(tank.joystickHandler)
 
 while True:
     eventHandler()
