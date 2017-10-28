@@ -60,16 +60,37 @@ screen = pygame.display.set_mode((screenWidth, screenHeight))
 pygame.display.set_caption(screenTitle)
 screen.fill(GREEN)
 
+
+# Do stuff when buttons are pressed
+def buttonAPress(controllerId):
+    print("Controller {} pressed A".format(controllerId))
+
+def buttonBPress(controllerId):
+    print("Controller {} pressed B".format(controllerId))
+
+def buttonXPress(controllerId):
+    print("Controller {} pressed X".format(controllerId))
+
+def buttonYPress(controllerId):
+    print("Controller {} pressed Y".format(controllerId))
+
+def buttonYPress(controllerId):
+    print("Controller {} pressed Y".format(controllerId))
+
 def eventHandler():
     for event in pygame.event.get():
         # Handle events for first controller
         controllerId = controller.get_id()
         if event.type == pygame.JOYBUTTONDOWN:
-            if event.joy== controllerId:
+            if event.joy == controllerId:
                 if event.button == xbox360_controller.A:
-                    print("Controller {} pressed A".format(controllerId))
+                    buttonAPress(controllerId)
                 elif event.button == xbox360_controller.B:
-                    print("Controller {} pressed B".format(controllerId))
+                    buttonBPress(controllerId)
+                elif event.button == xbox360_controller.X:
+                    buttonXPress(controllerId)
+                elif event.button == xbox360_controller.Y:
+                    buttonYPress(controllerId)
 
         # Handle quit of game or any other events
         if event.type == QUIT:
