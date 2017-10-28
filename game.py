@@ -34,14 +34,11 @@ joysticks = Joysticks()
 map = Map(screenWidth, screenHeight)
 allSpritesList = pygame.sprite.Group()
 
-def createTank():
-    playerTank = Tank(RED, screenWidth, screenHeight)
+def createTank(controller):
+    playerTank = Tank(RED, screenWidth, screenHeight, controller)
     playerTank.rect.x = 200
     playerTank.rect.y = 300
     return playerTank
-
-tank = createTank()
-allSpritesList.add(tank)
 
 obstacles = map.createObstacles()
 allSpritesList.add(obstacles)
@@ -76,6 +73,9 @@ def keyHandler():
 def joyHandler():
     joysticks.padHandler(tank.padHandler)
     joysticks.leftStickHandler(tank.joystickHandler)
+
+tank = createTank(0)
+allSpritesList.add(tank)
 
 while True:
     eventHandler()

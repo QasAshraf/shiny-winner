@@ -7,12 +7,13 @@ WHITE = (255, 255, 255)
 class Tank(pygame.sprite.Sprite):
     # This class represents a car. It derives from the "Sprite" class in Pygame.
 
-    def __init__(self, color, boardWidth, boardHeight):
+    def __init__(self, color, boardWidth, boardHeight, controllerNumber):
         self.width = 16
         self.height = 16
         self.movementMultiplier = 3
         self.boardWidth = boardWidth
         self.boardHeight = boardHeight
+        self.controllerId = controllerNumber
         ss = spritesheet.spritesheet('tanks.png')
         # Sprite is 16x16 pixels at location 0,0 in the file...
         image = ss.image_at((0, 0, self.width, self.height))
