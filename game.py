@@ -1,15 +1,24 @@
+#!/usr/bin/env python3
+
 import pygame
 from pygame.locals import *
 
+# colours
+BLACK    = (   0,   0,   0)
+WHITE    = ( 255, 255, 255)
+
+# Start game
 started = pygame.init()
-print(started)
 
-displayWidth = 1024
-displayHeight = 768
-displayTitle = "Tank Game"
+# Screen settings
+screenWidth = 1024
+screenHeight = 768
+screenTitle = "Tank Game"
 
-gameDisplay = pygame.display.set_mode((displayWidth, displayHeight))
-pygame.display.set_caption(displayTitle)
+# Show screen
+screen = pygame.display.set_mode((screenWidth, screenHeight))
+pygame.display.set_caption(screenTitle)
+screen.fill(WHITE)
 
 def eventHandler():
     for event in pygame.event.get():
@@ -22,3 +31,4 @@ while True:
     eventHandler()
     pygame.display.update()
 
+pygame.quit()
