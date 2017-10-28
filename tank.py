@@ -1,19 +1,36 @@
 import pygame
 
-WHITE = (255, 255, 255)
-
+# colours
+BLACK    = (   0,   0,   0)
+WHITE    = ( 255, 255, 255)
+GREEN    = ( 48, 142, 38)
+GREY = (210, 210 ,210)
+RED = (255, 0, 0)
+PURPLE = (255, 0, 255)
+ORANGE    = ( 255,165,0)
+BLUE    = ( 30,144,255)
 
 class Tank(pygame.sprite.Sprite):
     # This class represents a car. It derives from the "Sprite" class in Pygame.
 
-    def __init__(self, color, boardWidth, boardHeight, assignedJoystick):
+    def __init__(self, colour, boardWidth, boardHeight, assignedJoystick):
         self.width = 64
         self.height = 78
         self.movementMultiplier = 3
         self.boardWidth = boardWidth
         self.boardHeight = boardHeight
         self.joystick = assignedJoystick
-        image = pygame.image.load('Assets/p1-tank.png').convert_alpha()
+
+        # Super random colour assignment
+        if colour == GREEN:
+            image = pygame.image.load('Assets/p1-tank.png').convert_alpha()
+        elif colour == ORANGE:
+            image = pygame.image.load('Assets/p2-tank.png').convert_alpha()
+        elif colour == BLUE:
+            image = pygame.image.load('Assets/p3-tank.png').convert_alpha()
+        elif colour == RED:
+            image = pygame.image.load('Assets/p4-tank.png').convert_alpha()
+
         # Call the parent class (Sprite) constructor
         super().__init__()
 
@@ -24,7 +41,7 @@ class Tank(pygame.sprite.Sprite):
         self.image.set_colorkey(WHITE)
 
         # Draw the car (a rectangle!)
-        pygame.draw.rect(self.image, color, [0, 0, self.width, self.height])
+        pygame.draw.rect(self.image, colour, [0, 0, self.width, self.height])
 
         # Instead we could load a proper pciture of a car...
         # self.image = pygame.image.load("car.png").convert_alpha()
@@ -32,6 +49,21 @@ class Tank(pygame.sprite.Sprite):
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
+
+        # "randomise" location of tanks
+        if colour == GREEN:          # Bottom left
+            self.rect.x = 0
+            self.rect.y = 0
+        elif colour == ORANGE:        # Top right
+            self.rect.x = boardWidth - self.width
+            self.rect.y = boardHeight - self.height
+        elif colour == BLUE:          # Bottom right
+            self.rect.x = boardWidth - self.width
+            self.rect.y = 0
+        elif colour == RED:           # Top left
+            self.rect.x = 0
+            self.rect.y = boardHeight - self.height
+
 
     def padHandler(self, pad_up, pad_right, pad_down, pad_left):
         self.move(pad_up * self.movementMultiplier, pad_down * self.movementMultiplier, pad_left * self.movementMultiplier,

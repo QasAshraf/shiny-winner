@@ -13,6 +13,8 @@ GREEN    = ( 48, 142, 38)
 GREY = (210, 210 ,210)
 RED = (255, 0, 0)
 PURPLE = (255, 0, 255)
+ORANGE    = ( 255,165,0)
+BLUE    = ( 30,144,255)
 
 # Start game
 pygame.init()
@@ -43,12 +45,14 @@ if numberOfJoysticks == 0:
     print("No joysticks connected")
     exit()
 
+tankColours = [ GREEN,     # p1-tank.png
+                ORANGE,    # p2-tank.png
+                BLUE,      # p3-tank.png
+                RED]       # p4-tank.png
 
 def createTank(controllerId):
     joystick = Joystick(controllerId)
-    playerTank = Tank(RED, screenWidth, screenHeight, joystick)
-    playerTank.rect.x = 200
-    playerTank.rect.y = 300
+    playerTank = Tank(tankColours[controllerId], screenWidth, screenHeight, joystick)
     return playerTank
 
 tankCollection = list(map(lambda controller: createTank(controller.get_id()), joysticks))
