@@ -2,6 +2,7 @@
 
 import pygame
 from pygame.locals import *
+from tank import Tank
 
 import xbox360_controller
 
@@ -9,6 +10,9 @@ import xbox360_controller
 BLACK    = (   0,   0,   0)
 WHITE    = ( 255, 255, 255)
 GREEN    = ( 48, 142, 38)
+GREY = (210, 210 ,210)
+RED = (255, 0, 0)
+PURPLE = (255, 0, 255)
 
 # Start game
 pygame.init()
@@ -58,12 +62,24 @@ screenTitle = "Tank Game"
 # Show screen
 screen = pygame.display.set_mode((screenWidth, screenHeight))
 pygame.display.set_caption(screenTitle)
-screen.fill(GREEN)
+
+allSpritesList = pygame.sprite.Group()
+
+def createTank():
+    playerTank = Tank(RED, 20, 30)
+    playerTank.rect.x = 200
+    playerTank.rect.y = 300
+    return playerTank
+
+tank = createTank()
+allSpritesList.add(tank)
 
 def eventHandler():
     for event in pygame.event.get():
         # Handle events for first controller
-        controllerId = controller.get_id()
+        controllerId = 'none'
+        if (numberOfJoysticks > 0):
+            controllerId = controller.get_id()
         if event.type == pygame.JOYBUTTONDOWN:
             if event.joy== controllerId:
                 if event.button == xbox360_controller.A:
@@ -79,8 +95,26 @@ def eventHandler():
             if event.type != pygame.MOUSEMOTION and event.type != pygame.ACTIVEEVENT:
                 print(event) # Debugging purposes
 
+def keyHandler():
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        tank.moveLeft(5)
+    if keys[pygame.K_RIGHT]:
+        tank.moveRight(5)
+
 while True:
     eventHandler()
+    keyHandler()
+
+    # Game logic
+    allSpritesList.update()
+
+    screen.fill(GREEN)
+    # Draw the sprites
+    allSpritesList.draw(screen)
+
+    # Refresh the screen
     pygame.display.update()
 
 pygame.quit()
+quit()
