@@ -48,9 +48,6 @@ def eventHandler():
     for event in pygame.event.get():
         if joysticks.hasJoysticks():
             joysticks.buttonHandler(event)
-            joysticks.padHandler(tankMover.padHandler)
-            joysticks.leftStickHandler(tankMover.joystickHandler)
-
 
         # Handle quit of game or any other events
         if event.type == QUIT:
@@ -68,9 +65,15 @@ def keyHandler():
     if keys[pygame.K_RIGHT]:
         tank.moveRight(5)
 
+def joyHandler():
+    joysticks.padHandler(tankMover.padHandler)
+    joysticks.leftStickHandler(tankMover.joystickHandler)
+
 while True:
     eventHandler()
     keyHandler()
+    if joysticks.hasJoysticks():
+        joyHandler()
 
     # Game logic
     allSpritesList.update()
