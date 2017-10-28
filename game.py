@@ -3,6 +3,8 @@
 import pygame
 from pygame.locals import *
 
+import xbox360_controller
+
 # colours
 BLACK    = (   0,   0,   0)
 WHITE    = ( 255, 255, 255)
@@ -18,29 +20,35 @@ def printJoystickInfo(joystickCount):
         joystick = pygame.joystick.Joystick(i)
         joystick.init()
 
-        print("Joystick {}".format(i))
+        print("\tJoystick {}".format(i))
 
         # Get the name from the OS for the controller/joystick
         name = joystick.get_name()
-        print("Joystick name {}".format(name))
+        print("\tJoystick name {}".format(name))
 
         # Usually axis run in pairs, up/down for one, and left/right for
         # the other.
         axes = joystick.get_numaxes()
-        print("Number of axes: {}".format(axes))
+        print("\t\tNumber of axes: {}".format(axes))
 
         buttons = joystick.get_numbuttons()
-        print("Number of buttons: {}".format(buttons))
+        print("\t\tNumber of buttons: {}".format(buttons))
 
         # Hat switch. All or nothing for direction, not like joysticks.
         # Value comes back in an array.
         hats = joystick.get_numhats()
-        print("Number of hats: {}".format(hats))
+        print("\t\tNumber of hats: {}".format(hats))
 
-# List out joysticks and their capabilities
-joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
-print("Joystick count: " + str(pygame.joystick.get_count()))
-printJoystickInfo(pygame.joystick.get_count())
+# List out joysticks and their details
+numberOfJoysticks = pygame.joystick.get_count()
+joysticks = [pygame.joystick.Joystick(x) for x in range(numberOfJoysticks)]
+print("Joystick count: " + str(numberOfJoysticks))
+printJoystickInfo(numberOfJoysticks)
+
+# Create a controller object per controller
+# TOOD: Support multiple controllers
+if numberOfJoysticks > 0:
+    controller = xbox360_controller.Controller(0)
 
 # Screen settings
 screenWidth = 1024
@@ -54,14 +62,22 @@ screen.fill(GREEN)
 
 def eventHandler():
     for event in pygame.event.get():
-        #print(event)
-        # Possible joystick actions: JOYAXISMOTION JOYBALLMOTION JOYBUTTONDOWN JOYBUTTONUP JOYHATMOTION
-        if event.type == pygame.JOYBUTTONDOWN or event.type == pygame.JOYBUTTONUP or event.type == pygame.JOYAXISMOTION or event.type == pygame.JOYBALLMOTION or event.type == pygame.JOYHATMOTION:
-            print(">>>>>>>> Joystick event")
-            print(str(event.type))
+        # Handle events for first controller
+        controllerId = controller.get_id()
+        if event.type == pygame.JOYBUTTONDOWN:
+            if event.joy== controllerId:
+                if event.button == xbox360_controller.A:
+                    print("Controller {} pressed A".format(controllerId))
+                elif event.button == xbox360_controller.B:
+                    print("Controller {} pressed B".format(controllerId))
+
+        # Handle quit of game or any other events
         if event.type == QUIT:
             pygame.quit()
             quit()
+        else:
+            if event.type != pygame.MOUSEMOTION and event.type != pygame.ACTIVEEVENT:
+                print(event) # Debugging purposes
 
 while True:
     eventHandler()
