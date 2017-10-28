@@ -76,3 +76,10 @@ class Joysticks:
                                                                                     pad_down,
                                                                                     pad_left, pad_right))
             callback(pad_up, pad_right, pad_down, pad_left)
+
+    def leftStickHandler(self, callback):
+        leftStickX, leftStickY = self.controller.get_left_stick()
+
+        if leftStickY != 0 or leftStickX != 0:
+            print("Controller: {} ---> Left Stick: ({}, {})".format(self.controller.get_id(), round(leftStickX, 2), round(leftStickY, 2)))
+            callback(leftStickX, leftStickY)

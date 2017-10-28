@@ -41,18 +41,29 @@ def createTank():
 tank = createTank()
 allSpritesList.add(tank)
 
+MOVEMENT_MULTIPLIER = 3
 
 def joystickPadHandler(pad_up, pad_right, pad_down, pad_left):
-    MOVEMENT_MULTIPLIER = 3
     tank.move(pad_up * MOVEMENT_MULTIPLIER, pad_down * MOVEMENT_MULTIPLIER, pad_left * MOVEMENT_MULTIPLIER,
                   pad_right * MOVEMENT_MULTIPLIER)
 
+def tankMovementHandler(x, y):
+    if x > 0: # Move right
+        tank.moveRight(abs(x) * MOVEMENT_MULTIPLIER)
+    elif x < 0: # Move left
+        tank.moveLeft(abs(x) * MOVEMENT_MULTIPLIER)
+
+    if y > 0: # Move down
+        tank.moveDown(abs(x) * MOVEMENT_MULTIPLIER)
+    elif y < 0: # Move uop
+        tank.moveUp(abs(x) * MOVEMENT_MULTIPLIER)
 
 def eventHandler():
     for event in pygame.event.get():
         if joysticks.hasJoysticks():
             joysticks.joystickButtonHandler(event)
             joysticks.joystickPadHandler(joystickPadHandler)
+            joysticks.leftStickHandler(tankMovementHandler)
 
         # Handle quit of game or any other events
         if event.type == QUIT:
