@@ -1,4 +1,8 @@
 from numpy import exp, array, random, dot
+import pickle
+from pathlib import Path
+
+
 
 NEURON_COUNT = 8
 INPUT_COUNT = 3
@@ -59,6 +63,14 @@ class NeuralNetwork():
         print("    Layer 2 (1 neuron, with " + str(NEURON_COUNT) + " inputs):")
         print(self.layer2.synaptic_weights)
 
+    def load_weights(self):
+        with open('synaptic.pickle', 'rb') as f:
+            self.layer1.synaptic_weights, self.layer2.synaptic_weights = pickle.load(f)
+
+    def save_weights(self):
+        with open('synaptic.pickle', 'wb') as f:
+            pickle.dump([self.layer1.synaptic_weights, self.layer2.synaptic_weights], f)
+
 
 def normalise_array(input):
     input[0] /= 100
@@ -66,24 +78,9 @@ def normalise_array(input):
     input[2] = input[2]
     return input
 
-if __name__ == "__main__":
 
-    NEURON_COUNT = 4
-    INPUT_COUNT = 3
-
-    #Seed the random number generator
-    random.seed(1)
-
-    # Create layer 1 (4 neurons, each with 3 inputs)
-    layer1 = NeuronLayer(NEURON_COUNT, INPUT_COUNT)
-
-    # Create layer 2 (a single neuron with 4 inputs)
-    layer2 = NeuronLayer(1, NEURON_COUNT)
-
-    # Combine the layers to create a neural network
-    neural_network = NeuralNetwork(layer1, layer2)
-
-    print("Stage 1) Random starting synaptic weights: ")
+def do_training():
+    print("Starting random synaptic weights: ")
     neural_network.print_weights()
 
     # We need to normalise our dataset
@@ -111,10 +108,32 @@ if __name__ == "__main__":
 
     training_set_outputs = array([[1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0]]).T
 
+    neural_network.train(training_set_inputs, training_set_outputs, 100000)
 
-    # Train the neural network using the training set.
-    # Do it 60,000 times and make small adjustments each time.
-    neural_network.train(training_set_inputs, training_set_outputs, 60000)
+if __name__ == "__main__":
+
+    NEURON_COUNT = 4
+    INPUT_COUNT = 3
+
+    # load or synaptic weights
+    # Seed the random number generator
+    random.seed(1)
+
+    # Create layer 1 (4 neurons, each with 3 inputs)
+    layer1 = NeuronLayer(NEURON_COUNT, INPUT_COUNT)
+
+    # Create layer 2 (a single neuron with 4 inputs)
+    layer2 = NeuronLayer(1, NEURON_COUNT)
+
+    # Combine the layers to create a neural network
+    neural_network = NeuralNetwork(layer1, layer2)
+
+    my_file = Path("synaptic.pickle")
+    if my_file.is_file():
+        neural_network.load_weights()
+    else:
+        do_training()
+        neural_network.save_weights()
 
     print("Stage 2) New synaptic weights after training: ")
     neural_network.print_weights()
