@@ -59,10 +59,17 @@ class NeuralNetwork():
         print("    Layer 2 (1 neuron, with " + str(NEURON_COUNT) + " inputs):")
         print(self.layer2.synaptic_weights)
 
+
+def normalise_array(input):
+    input[0] /= 100
+    input[1] /= 100
+    input[2] = input[2]
+    return input
+
 if __name__ == "__main__":
 
-    NEURON_COUNT = 7
-    INPUT_COUNT = 6
+    NEURON_COUNT = 4
+    INPUT_COUNT = 3
 
     #Seed the random number generator
     random.seed(1)
@@ -79,18 +86,31 @@ if __name__ == "__main__":
     print("Stage 1) Random starting synaptic weights: ")
     neural_network.print_weights()
 
+    # We need to normalise our dataset
     # opponent speed, opponent health, opponent relative angle, opponent distance, own health, clear shot
+
+    # simplified inputs
+    # opponent health, own health, clear shot
     training_set_inputs = array([
-        [0, 10, 0, 60, 100, 1],
-        [100, 10, 0, 300, 100, 1],
-        [50, 10, 0, 60, 100, 1],
-        [0, 10, 0, 60, 100, 0],
-        [0, 10, 0, 10, 100, 0],
-        [15, 100, 0, 70, 10, 1],
-        [100, 10, 0, 60, 10, 0]
+        normalise_array([50, 50, 1]),
+        normalise_array([40, 50, 1]),
+        normalise_array([10, 100, 1]),
+        normalise_array([100, 40, 1]),
+        normalise_array([25, 10, 1]),
+        normalise_array([10, 30, 0]),
+        normalise_array([10, 100, 0]),
+        normalise_array([100, 40, 0]),
+        normalise_array([10, 10, 0]),
+        normalise_array([5, 100, 0]),
+        normalise_array([22, 12, 0]),
+        normalise_array([10, 10, 1]),
+        normalise_array([5, 100, 1]),
+        normalise_array([22, 12, 1]),
+        normalise_array([5, 12, 1])
     ])
 
-    training_set_outputs = array([[1, 0, 1, 0, 0, 0, 0]]).T
+    training_set_outputs = array([[1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0]]).T
+
 
     # Train the neural network using the training set.
     # Do it 60,000 times and make small adjustments each time.
@@ -100,6 +120,26 @@ if __name__ == "__main__":
     neural_network.print_weights()
 
     # Test the neural network with a new situation.
-    print("Stage 3) Considering a new situation  -> ?: ")
-    hidden_state, output = neural_network.think(array([700, 10, 0, 70, 8, 0]))
-    print (output)
+    print("Stage 3) Considering a new situation false ")
+    hidden_state, output = neural_network.think(array(normalise_array([40, 100, 0])))
+    print(output)
+
+    # Test the neural network with a new situation.
+    print("Stage 3) Considering a new situation  false ")
+    hidden_state, output = neural_network.think(array(normalise_array([90, 80, 0])))
+    print(output)
+
+    # Test the neural network with a new situation.
+    print("Stage 3) Considering a new situation  true ")
+    hidden_state, output = neural_network.think(array(normalise_array([40, 80, 1])))
+    print(output)
+
+    # Test the neural network with a new situation.
+    print("Stage 3) Considering a new situation  true ")
+    hidden_state, output = neural_network.think(array(normalise_array([50, 50, 1])))
+    print(output)
+
+    # Test the neural network with a new situation.
+    print("Stage 3) Considering a new situation  false ")
+    hidden_state, output = neural_network.think(array(normalise_array([2, 2, 1])))
+    print(output)
