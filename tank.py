@@ -50,8 +50,8 @@ class Tank(pygame.sprite.Sprite):
 
     def moveUp(self, pixels):
         self.rect.y -= pixels
-        if self.rect.y > self.boardHeight - self.height: self.rect.y = self.boardHeight - self.height
+        if self.rect.y < 0: self.rect.y = 0
 
     def moveDown(self, pixels):
         self.rect.y += pixels
-        if self.rect.y < 0: self.rect.y = 0
+        if self.rect.y > self.boardHeight - self.height: self.rect.y = self.boardHeight - self.height
