@@ -50,17 +50,19 @@ tankColours = [ GREEN,     # p1-tank.png
                 BLUE,      # p3-tank.png
                 RED]       # p4-tank.png
 
+obstacles = gameMap.createObstacles()
+allSpritesList.add(obstacles)
+
 def createTank(controllerId):
     joystick = Joystick(controllerId)
-    playerTank = Tank(tankColours[controllerId], screenWidth, screenHeight, joystick)
+    playerTank = Tank(tankColours[controllerId], screenWidth, screenHeight, joystick, obstacles)
     return playerTank
 
 tankCollection = list(map(lambda controller: createTank(controller.get_id()), joysticks))
 print(tankCollection)
 allSpritesList.add(tankCollection)
 
-obstacles = gameMap.createObstacles()
-allSpritesList.add(obstacles)
+
 
 print(allSpritesList.sprites())
 
@@ -91,6 +93,7 @@ while True:
     allSpritesList.update()
 
     screen.fill(GREEN)
+
     # Draw the sprites
     allSpritesList.draw(screen)
 

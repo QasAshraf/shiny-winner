@@ -10,16 +10,23 @@ PURPLE = (255, 0, 255)
 ORANGE    = ( 255,165,0)
 BLUE    = ( 30,144,255)
 
+MOVED_UP = 0
+MOVED_DOWN = 1
+MOVED_LEFT = 2
+MOVED_RIGHT = 3
+
 class Tank(pygame.sprite.Sprite):
     # This class represents a car. It derives from the "Sprite" class in Pygame.
 
-    def __init__(self, colour, boardWidth, boardHeight, assignedJoystick):
+    def __init__(self, colour, boardWidth, boardHeight, assignedJoystick, obstacles):
         self.width = 64
         self.height = 78
         self.movementMultiplier = 3
         self.boardWidth = boardWidth
         self.boardHeight = boardHeight
         self.joystick = assignedJoystick
+        self.listOfObstacles = obstacles
+        self.lastMovement = -1 # 0 = Up, 1 = Down, 2 = Left, 3 = Right
 
         # Super random colour assignment
         if colour == GREEN:
@@ -64,6 +71,13 @@ class Tank(pygame.sprite.Sprite):
             self.rect.x = 0
             self.rect.y = boardHeight - self.height
 
+    def hasCollidedWithObstacle(self):
+        collided = pygame.sprite.spritecollide(self, self.listOfObstacles, False)
+        if collided:
+            #print("Collision detected! Controller {} and last movement was {}".format(self.joystick.controllerId, self.lastMovement))
+            return True
+        else:
+            return False
 
     def padHandler(self, pad_up, pad_right, pad_down, pad_left):
         self.move(pad_up * self.movementMultiplier, pad_down * self.movementMultiplier, pad_left * self.movementMultiplier,
@@ -77,7 +91,7 @@ class Tank(pygame.sprite.Sprite):
 
         if y > 0:  # Move down
             self.moveDown(abs(y) * self.movementMultiplier)
-        elif y < 0:  # Move uop
+        elif y < 0:  # Move up
             self.moveUp(abs(y) * self.movementMultiplier)
 
     def move(self, pixelsUp, pixelsDown, pixelsLeft, pixelsRight):
@@ -87,17 +101,37 @@ class Tank(pygame.sprite.Sprite):
         self.moveDown(pixelsDown)
 
     def moveRight(self, pixels):
-        self.rect.x += pixels
-        if self.rect.x > self.boardWidth - self.width: self.rect.x = self.boardWidth - self.width
+        if self.hasCollidedWithObstacle() and self.lastMovement == MOVED_RIGHT:
+            print("Can't move right more")
+        else:
+            self.rect.x += pixels
+            self.lastMovement = MOVED_RIGHT
+            if self.rect.x > self.boardWidth - self.width:
+                self.rect.x = self.boardWidth - self.width
 
     def moveLeft(self, pixels):
-        self.rect.x -= pixels
-        if self.rect.x < 0: self.rect.x = 0
+        if self.hasCollidedWithObstacle() and self.lastMovement == MOVED_LEFT:
+            print("Can't move left more")
+        else:
+            self.rect.x -= pixels
+            self.lastMovement = MOVED_LEFT
+            if self.rect.x < 0:
+                self.rect.x = 0
 
     def moveUp(self, pixels):
-        self.rect.y -= pixels
-        if self.rect.y < 0: self.rect.y = 0
+        if self.hasCollidedWithObstacle() and self.lastMovement == MOVED_UP:
+            print("Can't move up more")
+        else:
+            self.rect.y -= pixels
+            self.lastMovement = MOVED_UP
+            if self.rect.y < 0:
+                self.rect.y = 0
 
     def moveDown(self, pixels):
-        self.rect.y += pixels
-        if self.rect.y > self.boardHeight - self.height: self.rect.y = self.boardHeight - self.height
+        if self.hasCollidedWithObstacle() and self.lastMovement == MOVED_DOWN:
+            print("Can't move down more")
+        else:
+            self.rect.y += pixels
+            self.lastMovement = MOVED_DOWN
+            if self.rect.y > self.boardHeight - self.height:
+                self.rect.y = self.boardHeight - self.height

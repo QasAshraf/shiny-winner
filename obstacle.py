@@ -6,8 +6,8 @@ BLACK    = (   0,   0,   0)
 class Obstacle(pygame.sprite.Sprite):
 
     def __init__(self, x, y):
-        self.width = 16
-        self.height = 16
+        self.width = 50
+        self.height = 50
         # Call the parent class (Sprite) constructor
         super().__init__()
 
