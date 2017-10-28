@@ -59,6 +59,9 @@ screenWidth = 1024
 screenHeight = 768
 screenTitle = "Tank Game"
 
+# Print all events
+printAllEvents = False
+
 # Show screen
 screen = pygame.display.set_mode((screenWidth, screenHeight))
 pygame.display.set_caption(screenTitle)
@@ -91,7 +94,7 @@ def buttonYPress(controllerId):
 def buttonYPress(controllerId):
     print("Controller {} pressed Y".format(controllerId))
 
-def joystickEventHandler(controllerId, event):
+def joystickButtonHandler(controllerId, event):
     # Handle events for first controller
     if event.type == pygame.JOYBUTTONDOWN:
         if event.joy == controllerId:
@@ -104,11 +107,19 @@ def joystickEventHandler(controllerId, event):
             elif event.button == xbox360_controller.Y:
                 buttonYPress(controllerId)
 
+def joystickPadHandler(xboxController):
+    pad_up, pad_right, pad_down, pad_left = xboxController.get_pad()
+    padPressed = pad_up + pad_right + pad_left + pad_down
+    if padPressed > 0:
+        print("Up: {}, Down: {}, Left: {}, Right: {}".format(pad_up, pad_down, pad_left, pad_right))
+
 def eventHandler():
     for event in pygame.event.get():
         if numberOfJoysticks > 0:
             controllerId = controller.get_id()
-            joystickEventHandler(controllerId, event)
+            joystickButtonHandler(controllerId, event)
+            # TODO: Handle pad for multiple joysticks
+            joystickPadHandler(controller)
 
         # Handle quit of game or any other events
         if event.type == QUIT:
@@ -116,7 +127,8 @@ def eventHandler():
             quit()
         else:
             if event.type != pygame.MOUSEMOTION and event.type != pygame.ACTIVEEVENT:
-                print(event) # Debugging purposes
+                if printAllEvents:
+                    print(event) # Debugging purposes
 
 def keyHandler():
     keys = pygame.key.get_pressed()
