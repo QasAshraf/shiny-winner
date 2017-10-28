@@ -110,8 +110,10 @@ def joystickButtonHandler(controllerId, event):
 def joystickPadHandler(xboxController):
     pad_up, pad_right, pad_down, pad_left = xboxController.get_pad()
     padPressed = pad_up + pad_right + pad_left + pad_down
+    MOVEMENT_MULTIPLIER = 3
     if padPressed > 0:
-        print("Up: {}, Down: {}, Left: {}, Right: {}".format(pad_up, pad_down, pad_left, pad_right))
+        print("Controller: {} --> Up: {}, Down: {}, Left: {}, Right: {}".format(xboxController.get_id(), pad_up, pad_down, pad_left, pad_right))
+        tank.move(pad_up * MOVEMENT_MULTIPLIER, pad_down * MOVEMENT_MULTIPLIER, pad_left * MOVEMENT_MULTIPLIER, pad_right * MOVEMENT_MULTIPLIER)
 
 def eventHandler():
     for event in pygame.event.get():
