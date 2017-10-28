@@ -61,8 +61,8 @@ def tankMovementHandler(x, y):
 def eventHandler():
     for event in pygame.event.get():
         if joysticks.hasJoysticks():
-            joysticks.joystickButtonHandler(event)
-            joysticks.joystickPadHandler(joystickPadHandler)
+            joysticks.buttonHandler(event)
+            joysticks.padHandler(joystickPadHandler)
             joysticks.leftStickHandler(tankMovementHandler)
 
         # Handle quit of game or any other events
