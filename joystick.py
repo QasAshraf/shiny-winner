@@ -1,40 +1,29 @@
 import pygame
 import xbox360_controller
 
-class Joysticks:
-    def __init__(self):
-        # List out joysticks and their details
-        self.numberOfJoysticks = pygame.joystick.get_count()
-        joysticks = [pygame.joystick.Joystick(x) for x in range(self.numberOfJoysticks)]
-        print("Joystick count: " + str(self.numberOfJoysticks))
+class Joystick:
+    def __init__(self, controllerId):
+        self.controller = xbox360_controller.Controller(controllerId)
+        self.controllerId = controllerId
         self.printJoystickInfo()
 
-        # Create a controller object per controller
-        # TOOD: Support multiple controllers
-        if self.numberOfJoysticks > 0:
-            self.controller = xbox360_controller.Controller(0)
-
-    def hasJoysticks(self):
-        return self.numberOfJoysticks > 0
     def printJoystickInfo(self):
-        # For each joystick:
-        for i in range(self.numberOfJoysticks):
-            joystick = pygame.joystick.Joystick(i)
-            joystick.init()
+        joystick = pygame.joystick.Joystick(self.controllerId)
+        joystick.init()
 
-            print("\tJoystick {}".format(i))
+        print("\tJoystick {}".format(self.controllerId))
 
-            # Get the name from the OS for the controller/joystick
-            name = joystick.get_name()
-            print("\tJoystick name {}".format(name))
+        # Get the name from the OS for the controller/joystick
+        name = joystick.get_name()
+        print("\tJoystick name {}".format(name))
 
-            # Usually axis run in pairs, up/down for one, and left/right for
-            # the other.
-            axes = joystick.get_numaxes()
-            print("\t\tNumber of axes: {}".format(axes))
+        # Usually axis run in pairs, up/down for one, and left/right for
+        # the other.
+        axes = joystick.get_numaxes()
+        print("\t\tNumber of axes: {}".format(axes))
 
-            buttons = joystick.get_numbuttons()
-            print("\t\tNumber of buttons: {}".format(buttons))
+        buttons = joystick.get_numbuttons()
+        print("\t\tNumber of buttons: {}".format(buttons))
 
     # Do stuff when buttons are pressed
     def buttonAPress(self, controllerId):
@@ -56,22 +45,20 @@ class Joysticks:
         print("Controller {} pressed BACK".format(controllerId))
 
     def buttonHandler(self, event):
-        controllerId = self.controller.get_id()
         # Handle events for first controller
-        if event.type == pygame.JOYBUTTONDOWN:
-            if event.joy == controllerId:
-                if event.button == xbox360_controller.A:
-                    self.buttonAPress(controllerId)
-                elif event.button == xbox360_controller.B:
-                    self.buttonBPress(controllerId)
-                elif event.button == xbox360_controller.X:
-                    self.buttonXPress(controllerId)
-                elif event.button == xbox360_controller.Y:
-                    self.buttonYPress(controllerId)
-                elif event.button == xbox360_controller.START:
-                    self.buttonStartPress(controllerId)
-                elif event.button == xbox360_controller.BACK:
-                    self.buttonBackPress(controllerId)
+        if event.type == pygame.JOYBUTTONDOWN and event.joy == self.controllerId:
+            if event.button == xbox360_controller.A:
+                self.buttonAPress(self.controllerId)
+            elif event.button == xbox360_controller.B:
+                self.buttonBPress(self.controllerId)
+            elif event.button == xbox360_controller.X:
+                self.buttonXPress(self.controllerId)
+            elif event.button == xbox360_controller.Y:
+                self.buttonYPress(self.controllerId)
+            elif event.button == xbox360_controller.START:
+                self.buttonStartPress(self.controllerId)
+            elif event.button == xbox360_controller.BACK:
+                self.buttonBackPress(self.controllerId)
 
     def padHandler(self, callback):
         pad_up, pad_right, pad_down, pad_left = self.controller.get_pad()

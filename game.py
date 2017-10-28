@@ -3,7 +3,7 @@
 import pygame
 from pygame.locals import *
 from tank import Tank
-from joystick import Joysticks
+from joystick import Joystick
 from map import Map
 
 # colours
@@ -17,12 +17,11 @@ PURPLE = (255, 0, 255)
 # Start game
 pygame.init()
 pygame.joystick.init()
-joysticks = Joysticks()
 
-# Need a controller to play
-if not joysticks.hasJoysticks():
-    print("No joysticks connected")
-    exit()
+# List out joysticks and their details
+numberOfJoysticks = pygame.joystick.get_count()
+joysticks = [pygame.joystick.Joystick(x) for x in range(numberOfJoysticks)]
+print("Joystick count: " + str(numberOfJoysticks))
 
 # Screen settings
 screenWidth = 1024
@@ -36,24 +35,35 @@ printAllEvents = False
 screen = pygame.display.set_mode((screenWidth, screenHeight))
 pygame.display.set_caption(screenTitle)
 
-map = Map(screenWidth, screenHeight)
+gameMap = Map(screenWidth, screenHeight)
 allSpritesList = pygame.sprite.Group()
 
-def createTank(controller):
-    playerTank = Tank(RED, screenWidth, screenHeight, controller)
+# Need a controller to play
+if numberOfJoysticks == 0:
+    print("No joysticks connected")
+    exit()
+
+
+def createTank(controllerId):
+    joystick = Joystick(controllerId)
+    playerTank = Tank(RED, screenWidth, screenHeight, joystick)
     playerTank.rect.x = 200
     playerTank.rect.y = 300
     return playerTank
 
-obstacles = map.createObstacles()
+tankCollection = list(map(lambda controller: createTank(controller.get_id()), joysticks))
+print(tankCollection)
+allSpritesList.add(tankCollection)
+
+obstacles = gameMap.createObstacles()
 allSpritesList.add(obstacles)
 
 print(allSpritesList.sprites())
 
 def eventHandler():
     for event in pygame.event.get():
-        if joysticks.hasJoysticks():
-            joysticks.buttonHandler(event)
+        for players in tankCollection:
+            players.joystick.buttonHandler(event)
 
         # Handle quit of game or any other events
         if event.type == QUIT:
@@ -64,32 +74,14 @@ def eventHandler():
                 if printAllEvents:
                     print(event) # Debugging purposes
 
-def keyHandler():
-    #keys = pygame.key.get_pressed()
-    #if keys[pygame.K_LEFT]:
-    #    tank.padHandler(0, 0, 0, 1)
-    #if keys[pygame.K_RIGHT]:
-    #    tank.padHandler(0, 1, 0, 0)
-    #if keys[pygame.K_UP]:
-    #    tank.padHandler(1, 0, 0, 0)
-    #if keys[pygame.K_DOWN]:
-    #    tank.padHandler(0, 0, 1, 0)
-
 def joyHandler():
-    joysticks.padHandler(tank.padHandler)
-    joysticks.leftStickHandler(tank.joystickHandler)
-
-
-
-
-tank = createTank(0)
-allSpritesList.add(tank)
+    for players in tankCollection:
+        players.joystick.padHandler(players.padHandler)
+        players.joystick.leftStickHandler(players.joystickHandler)
 
 while True:
     eventHandler()
-    keyHandler()
-    if joysticks.hasJoysticks():
-        joyHandler()
+    joyHandler()
 
     # Game logic
     allSpritesList.update()
