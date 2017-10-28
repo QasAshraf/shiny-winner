@@ -33,7 +33,7 @@ joysticks = Joysticks()
 allSpritesList = pygame.sprite.Group()
 
 def createTank():
-    playerTank = Tank(RED, 20, 30)
+    playerTank = Tank(RED, screenWidth, screenHeight)
     playerTank.rect.x = 200
     playerTank.rect.y = 300
     return playerTank
