@@ -54,7 +54,7 @@ class Joysticks:
     def buttonYPress(self, controllerId):
         print("Controller {} pressed Y".format(controllerId))
 
-    def joystickButtonHandler(self, event):
+    def buttonHandler(self, event):
         controllerId = self.controller.get_id()
         # Handle events for first controller
         if event.type == pygame.JOYBUTTONDOWN:
@@ -68,7 +68,7 @@ class Joysticks:
                 elif event.button == xbox360_controller.Y:
                     self.buttonYPress(controllerId)
 
-    def joystickPadHandler(self, callback):
+    def padHandler(self, callback):
         pad_up, pad_right, pad_down, pad_left = self.controller.get_pad()
         padPressed = pad_up + pad_right + pad_left + pad_down
         if padPressed > 0:
