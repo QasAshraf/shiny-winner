@@ -65,7 +65,7 @@ def eventHandler():
                     print(event) # Debugging purposes
 
 def keyHandler():
-    #keys = pygame.key.get_pressed()
+    keys = pygame.key.get_pressed()
     #if keys[pygame.K_LEFT]:
     #    tank.padHandler(0, 0, 0, 1)
     #if keys[pygame.K_RIGHT]:
