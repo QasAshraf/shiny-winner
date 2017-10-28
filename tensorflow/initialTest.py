@@ -1,8 +1,18 @@
+# Import `tensorflow`
 import tensorflow as tf
 
-node1 = tf.constant(3.0, dtype=tf.float32)
-node2 = tf.constant(4.0) # also tf.float32 implicitly
-node3 = tf.add(node1, node2)
+# Initialize two constants
+x1 = tf.constant([1,2,3,4])
+x2 = tf.constant([5,6,7,8])
+
+# Multiply
+result = tf.multiply(x1, x2)
+
+# Intialize the Session
 sess = tf.Session()
-print("node3:", node3)
-print("sess.run(node3):", sess.run(node3))
+
+# Print the result
+print(sess.run(result))
+
+# Close the session
+sess.close()
