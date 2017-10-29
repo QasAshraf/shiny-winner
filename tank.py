@@ -113,7 +113,7 @@ class Tank(pygame.sprite.Sprite):
             self.lastMovement = MOVED_RIGHT
 
             oldCenter = self.rect.center
-            self.rotation += pixels
+            self.rotation -= pixels
             self.image = pygame.transform.rotate(pygame.image.load(self.filename).convert_alpha(), self.rotation)
             self.rect = self.image.get_rect()
             self.rect.center = oldCenter
@@ -127,7 +127,7 @@ class Tank(pygame.sprite.Sprite):
         else:
             self.lastMovement = MOVED_LEFT
             oldCenter = self.rect.center
-            self.rotation -= pixels
+            self.rotation += pixels
             self.image = pygame.transform.rotate(pygame.image.load(self.filename).convert_alpha(), self.rotation)
             self.rect = self.image.get_rect()
             self.rect.center = oldCenter
@@ -139,7 +139,13 @@ class Tank(pygame.sprite.Sprite):
         if self.hasCollidedWithObstacle() and self.lastMovement == MOVED_UP:
             print("Can't move up more")
         else:
-            self.rect.y -= pixels
+            if self.rotation == 0:
+                self.rect.y -= pixels
+            else:
+                # Calculate angle to move
+                self.rect.x += math.sin(self.rotation/360) * pixels
+                self.rect.y -= math.cos(self.rotation/360) * pixels
+
             self.lastMovement = MOVED_UP
             self.checkBoardBoundries()
 
@@ -149,6 +155,13 @@ class Tank(pygame.sprite.Sprite):
             print("Can't move down more")
         else:
             self.rect.y += pixels
+            if self.rotation == 0:
+                self.rect.y += pixels
+            else:
+                # Calculate angle to move
+                self.rect.x -= math.sin(self.rotation/360) * pixels
+                self.rect.y += math.cos(self.rotation/360) * pixels
+
             self.lastMovement = MOVED_DOWN
 
             self.checkBoardBoundries()
@@ -157,7 +170,6 @@ class Tank(pygame.sprite.Sprite):
     def checkBoardBoundries(self):
         if self.rotation > 360: self.rotation -= 360
         if self.rotation < 0: self.rotation += 360
-        print("Should move with {} angle".format(self.rotation))
         if self.rect.y < 0: self.rect.y = 0
         if self.rect.x > self.boardWidth - self.width: self.rect.x = self.boardWidth - self.width
         if self.rect.y > self.boardHeight - self.height: self.rect.y = self.boardHeight - self.height
