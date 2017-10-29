@@ -1,4 +1,5 @@
 import pygame
+import math
 
 # colours
 BLACK    = (   0,   0,   0)
@@ -27,16 +28,21 @@ class Tank(pygame.sprite.Sprite):
         self.joystick = assignedJoystick
         self.listOfObstacles = obstacles
         self.lastMovement = -1 # 0 = Up, 1 = Down, 2 = Left, 3 = Right
+        self.rotation = 0
 
         # Super random colour assignment
         if colour == GREEN:
             image = pygame.image.load('Assets/p1-tank.png').convert_alpha()
+            self.filename = 'Assets/p1-tank.png'
         elif colour == ORANGE:
             image = pygame.image.load('Assets/p2-tank.png').convert_alpha()
+            self.filename = 'Assets/p2-tank.png'
         elif colour == BLUE:
             image = pygame.image.load('Assets/p3-tank.png').convert_alpha()
+            self.filename = 'Assets/p3-tank.png'
         elif colour == RED:
             image = pygame.image.load('Assets/p4-tank.png').convert_alpha()
+            self.filename = 'Assets/p4-tank.png'
 
         # Call the parent class (Sprite) constructor
         super().__init__()
@@ -80,14 +86,14 @@ class Tank(pygame.sprite.Sprite):
             return False
 
     def padHandler(self, pad_up, pad_right, pad_down, pad_left):
-        self.move(pad_up * self.movementMultiplier, pad_down * self.movementMultiplier, pad_left * self.movementMultiplier,
-                  pad_right * self.movementMultiplier)
+        self.move(pad_up * self.movementMultiplier, pad_down * self.movementMultiplier, pad_left,
+                  pad_right)
 
     def joystickHandler(self, x, y):
         if x > 0:  # Move right
-            self.moveRight(abs(x) * self.movementMultiplier)
+            self.moveRight(abs(x))
         elif x < 0:  # Move left
-            self.moveLeft(abs(x) * self.movementMultiplier)
+            self.moveLeft(abs(x))
 
         if y > 0:  # Move down
             self.moveDown(abs(y) * self.movementMultiplier)
@@ -104,19 +110,30 @@ class Tank(pygame.sprite.Sprite):
         if self.hasCollidedWithObstacle() and self.lastMovement == MOVED_RIGHT:
             print("Can't move right more")
         else:
-            self.rect.x += pixels
             self.lastMovement = MOVED_RIGHT
-            if self.rect.x > self.boardWidth - self.width:
-                self.rect.x = self.boardWidth - self.width
+
+            oldCenter = self.rect.center
+            self.rotation += pixels
+            self.image = pygame.transform.rotate(pygame.image.load(self.filename).convert_alpha(), self.rotation)
+            self.rect = self.image.get_rect()
+            self.rect.center = oldCenter
+
+            self.checkBoardBoundries()
+
 
     def moveLeft(self, pixels):
         if self.hasCollidedWithObstacle() and self.lastMovement == MOVED_LEFT:
             print("Can't move left more")
         else:
-            self.rect.x -= pixels
             self.lastMovement = MOVED_LEFT
-            if self.rect.x < 0:
-                self.rect.x = 0
+            oldCenter = self.rect.center
+            self.rotation -= pixels
+            self.image = pygame.transform.rotate(pygame.image.load(self.filename).convert_alpha(), self.rotation)
+            self.rect = self.image.get_rect()
+            self.rect.center = oldCenter
+
+            self.checkBoardBoundries()
+
 
     def moveUp(self, pixels):
         if self.hasCollidedWithObstacle() and self.lastMovement == MOVED_UP:
@@ -124,8 +141,9 @@ class Tank(pygame.sprite.Sprite):
         else:
             self.rect.y -= pixels
             self.lastMovement = MOVED_UP
-            if self.rect.y < 0:
-                self.rect.y = 0
+
+            self.checkBoardBoundries()
+
 
     def moveDown(self, pixels):
         if self.hasCollidedWithObstacle() and self.lastMovement == MOVED_DOWN:
@@ -133,5 +151,12 @@ class Tank(pygame.sprite.Sprite):
         else:
             self.rect.y += pixels
             self.lastMovement = MOVED_DOWN
-            if self.rect.y > self.boardHeight - self.height:
-                self.rect.y = self.boardHeight - self.height
+
+            self.checkBoardBoundries()
+
+
+    def checkBoardBoundries(self):
+        if self.rect.y < 0: self.rect.y = 0
+        if self.rect.x > self.boardWidth - self.width: self.rect.x = self.boardWidth - self.width
+        if self.rect.y > self.boardHeight - self.height: self.rect.y = self.boardHeight - self.height
+        if self.rect.x < 0: self.rect.x = 0
