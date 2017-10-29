@@ -141,7 +141,6 @@ class Tank(pygame.sprite.Sprite):
         else:
             self.rect.y -= pixels
             self.lastMovement = MOVED_UP
-
             self.checkBoardBoundries()
 
 
@@ -156,6 +155,9 @@ class Tank(pygame.sprite.Sprite):
 
 
     def checkBoardBoundries(self):
+        if self.rotation > 360: self.rotation -= 360
+        if self.rotation < 0: self.rotation += 360
+        print("Should move with {} angle".format(self.rotation))
         if self.rect.y < 0: self.rect.y = 0
         if self.rect.x > self.boardWidth - self.width: self.rect.x = self.boardWidth - self.width
         if self.rect.y > self.boardHeight - self.height: self.rect.y = self.boardHeight - self.height
